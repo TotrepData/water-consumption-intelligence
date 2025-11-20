@@ -18,7 +18,6 @@
 # - Ingest raw IoT water meter readings
 # - Transform and enrich data with sensor information
 # - Create analytics tables for visualization
-# - Build a regression model to predict consumption patterns
 #
 # ## Architecture Layers
 # - **Bronze**: Raw data ingestion and normalization
@@ -30,7 +29,6 @@
 # 2. Store as Delta tables for ACID compliance
 # 3. Transform types and join with sensor metadata
 # 4. Create analytics tables for dashboard
-# 5. Train regression model for consumption forecasting
 
 # COMMAND
 
@@ -183,99 +181,6 @@ tendencia_df.write.format("delta") \
 print("✓ Gold layer created")
 
 # MARKDOWN
-# ## LAYER 4: Machine Learning - Consumption Prediction
-
-# COMMAND
-
-print("\n[ML] Training prediction model...")
-
-# Prepare data with all features
-datos_modelo = silver_df.filter(
-    col("consumoAcumuladoM2").isNotNull()
-).select(
-    "consumoAcumuladoM2",
-    "barrio",
-    "ciudad",
-    "estrato",
-    "valorM2",
-    "fechaHora"
-)
-
-# Extract temporal features
-datos_modelo = datos_modelo \
-    .withColumn("dia_semana", dayofweek(col("fechaHora"))) \
-    .withColumn("hora", hour(col("fechaHora")))
-
-# Register temporary view for SQL
-datos_modelo.createOrReplaceTempView("datos_temp")
-
-# Create predictions using SQL (averaging by groups)
-predicciones = spark.sql("""
-SELECT 
-    consumoAcumuladoM2,
-    AVG(consumoAcumuladoM2) OVER (
-        PARTITION BY dia_semana, hora, estrato, barrio, ciudad, valorM2
-    ) as prediction
-FROM datos_temp
-""")
-
-# Calculate RMSE
-rmse_df = predicciones.withColumn(
-    "error_sq", 
-    pow(col("consumoAcumuladoM2") - col("prediction"), 2)
-).agg(
-    sqrt(avg(col("error_sq"))).alias("rmse")
-)
-
-rmse = rmse_df.collect()[0][0]
-
-print(f"\nModel Performance:")
-print(f"  RMSE: {rmse:.4f} m³")
-print(f"  Training samples: {predicciones.count()}")
-
-# Save predictions
-predicciones.write.format("delta") \
-    .mode("overwrite") \
-    .saveAsTable("labs_56754_cs713b.javier_mondragon.gold_predicciones_consumo")
-
-# MARKDOWN
-# ## Model Evaluation
-
-# COMMAND
-
-# Visualization: Actual vs Predicted
-import matplotlib.pyplot as plt
-
-predictions_pd = predicciones.select("consumoAcumuladoM2", "prediction").toPandas()
-
-plt.figure(figsize=(10, 6))
-plt.scatter(
-    predictions_pd["consumoAcumuladoM2"], 
-    predictions_pd["prediction"], 
-    alpha=0.5,
-    s=20
-)
-
-min_val = min(
-    predictions_pd["consumoAcumuladoM2"].min(), 
-    predictions_pd["prediction"].min()
-)
-max_val = max(
-    predictions_pd["consumoAcumuladoM2"].max(), 
-    predictions_pd["prediction"].max()
-)
-
-plt.plot([min_val, max_val], [min_val, max_val], 'r--', linewidth=2, label='Perfect Prediction')
-
-plt.xlabel('Actual Consumption (m³)', fontsize=11)
-plt.ylabel('Predicted Consumption (m³)', fontsize=11)
-plt.title(f'Consumption Prediction Model - RMSE: {rmse:.4f} m³', fontsize=12, fontweight='bold')
-plt.legend(fontsize=10)
-plt.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.show()
-
-# MARKDOWN
 # ## Pipeline Summary
 
 # COMMAND
@@ -284,7 +189,7 @@ print("\n" + "=" * 80)
 print("PIPELINE EXECUTION COMPLETED SUCCESSFULLY")
 print("=" * 80)
 
-print("\n✓ Data Lakes Created:")
+print("\n Data Lakes Created:")
 print("  - bronze_lecturas: Raw sensor readings")
 print("  - bronze_maestro_sensores: Master sensor data")
 print("  - silver_lecturas_maestro: Transformed and enriched data")
@@ -293,19 +198,14 @@ print("  - gold_barrios_aumento: Consumption increase analytics")
 print("  - gold_tendencia_diaria: Daily consumption trend")
 print("  - gold_predicciones_consumo: ML predictions")
 
-print("\n✓ Data Quality Checks:")
+print("\n Data Quality Checks:")
 print("  - Schema normalization: Passed")
 print("  - Data type conversion: Passed")
 print("  - Duplicate removal: Passed")
 print("  - Null value handling: Passed")
 print("  - Referential integrity: Passed")
 
-print("\n✓ Machine Learning:")
-print(f"  - Model: Consumption Prediction (Aggregation-based)")
-print(f"  - RMSE: {rmse:.4f} m³")
-print(f"  - Training samples: {predicciones.count():,}")
-
-print("\n✓ Ready for Dashboard:")
+print("\n Ready for Dashboard:")
 print("  - Query gold_barrios_fallidos for failed sensors")
 print("  - Query gold_barrios_aumento for consumption spikes")
 print("  - Query gold_tendencia_diaria for trend visualization")
