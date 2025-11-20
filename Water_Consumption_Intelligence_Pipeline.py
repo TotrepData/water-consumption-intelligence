@@ -49,10 +49,6 @@ print("=" * 80)
 # MARKDOWN
 # ## LAYER 1: BRONZE - Data Ingestion
 
-# COMMAND
-
-print("\n[BRONZE] Loading raw data...")
-
 # Define paths
 lecturas_path = "/Volumes/labs_56754_cs713b/acueducto/landing_lecturas/"
 maestro_path = "/Volumes/labs_56754_cs713b/acueducto/maestro_sensores/"
@@ -80,14 +76,10 @@ maestro_df.write.format("delta") \
     .option("overwriteSchema", "true") \
     .saveAsTable("labs_56754_cs713b.javier_mondragon.bronze_maestro_sensores")
 
-print("✓ Bronze layer created")
+print("Bronze layer created")
 
 # MARKDOWN
 # ## LAYER 2: SILVER - Data Transformation
-
-# COMMAND
-
-print("\n[SILVER] Transforming data...")
 
 # Load bronze tables
 lecturas_bronze = spark.table("labs_56754_cs713b.javier_mondragon.bronze_lecturas")
@@ -116,14 +108,12 @@ silver_df.write.format("delta") \
     .option("overwriteSchema", "true") \
     .saveAsTable("labs_56754_cs713b.javier_mondragon.silver_lecturas_maestro")
 
-print("✓ Silver layer created")
+print("Silver layer created")
 
 # MARKDOWN
 # ## LAYER 3: GOLD - Analytics Tables
 
 # COMMAND
-
-print("\n[GOLD] Creating analytics tables...")
 
 silver_df = spark.table("labs_56754_cs713b.javier_mondragon.silver_lecturas_maestro")
 
@@ -178,4 +168,4 @@ tendencia_df.write.format("delta") \
     .mode("overwrite") \
     .saveAsTable("labs_56754_cs713b.javier_mondragon.gold_tendencia_diaria")
 
-print(" Gold layer created")
+print("Gold layer created")
