@@ -179,33 +179,3 @@ tendencia_df.write.format("delta") \
     .saveAsTable("labs_56754_cs713b.javier_mondragon.gold_tendencia_diaria")
 
 print(" Gold layer created")
-
-# MARKDOWN
-# ## Pipeline Summary
-
-# COMMAND
-
-print("\n" + "=" * 80)
-print("PIPELINE EXECUTION COMPLETED SUCCESSFULLY")
-print("=" * 80)
-
-print("\n Data Lakes Created:")
-print("  - bronze_lecturas: Raw sensor readings")
-print("  - bronze_maestro_sensores: Master sensor data")
-print("  - silver_lecturas_maestro: Transformed and enriched data")
-print("  - gold_barrios_fallidos: Failed sensor analytics")
-print("  - gold_barrios_aumento: Consumption increase analytics")
-print("  - gold_tendencia_diaria: Daily consumption trend")
-print("  - gold_predicciones_consumo: ML predictions")
-
-print("\n Data Quality Checks:")
-print("  - Schema normalization: Passed")
-print("  - Data type conversion: Passed")
-print("  - Duplicate removal: Passed")
-print("  - Null value handling: Passed")
-print("  - Referential integrity: Passed")
-
-print("\n Ready for Dashboard:")
-print("  - Query gold_barrios_fallidos for failed sensors")
-print("  - Query gold_barrios_aumento for consumption spikes")
-print("  - Query gold_tendencia_diaria for trend visualization")
