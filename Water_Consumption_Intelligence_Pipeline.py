@@ -178,7 +178,7 @@ tendencia_df.write.format("delta") \
     .mode("overwrite") \
     .saveAsTable("labs_56754_cs713b.javier_mondragon.gold_tendencia_diaria")
 
-print("✓ Gold layer created")
+print(" Gold layer created")
 
 # MARKDOWN
 # ## Pipeline Summary
