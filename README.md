@@ -86,17 +86,6 @@ FROM gold_tendencia_diaria
 ORDER BY fecha;
 ```
 
-## Dashboard
-
-### Failed Sensors by Neighborhood
-![Failed Sensors by Neighborhood](images/Failed_Sensors_by_Neighborhood.png)
-
-### Neighbourhood with Major Consumption Increase
-![Consumption Increase](images/Neighborhood_with_Major_Consumption_Increase.png)
-
-### Consumption Trend
-![Consumption Trend](images/Consumption_Trend.png)
-
 ## Tech Stack
 
 - Apache Spark
