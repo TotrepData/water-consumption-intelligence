@@ -54,8 +54,8 @@ print("=" * 80)
 print("\n[BRONZE] Loading raw data...")
 
 # Define paths
-lecturas_path = "/Volumes/labs_56754_cs713b/parcial2/acueducto/landing_lecturas/"
-maestro_path = "/Volumes/labs_56754_cs713b/parcial2/acueducto/maestro_sensores/"
+lecturas_path = "/Volumes/labs_56754_cs713b/acueducto/landing_lecturas/"
+maestro_path = "/Volumes/labs_56754_cs713b/acueducto/maestro_sensores/"
 
 # Read JSON sensor readings
 lecturas_df = spark.read \
