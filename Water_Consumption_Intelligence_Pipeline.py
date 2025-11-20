@@ -7,8 +7,8 @@
 # Purpose: Process IoT water meter data
 #
 # Data Sources:
-# - Landing: /Volumes/labs_56754_cs713b/parcial2/acueducto/landing_lecturas/
-# - Master: /Volumes/labs_56754_cs713b/parcial2/acueducto/maestro_sensores/
+# - Landing: /Volumes/labs_56754_cs713b/acueducto/landing_lecturas/
+# - Master: /Volumes/labs_56754_cs713b/acueducto/maestro_sensores/
 
 # MARKDOWN
 # # Water Consumption Intelligence Platform
