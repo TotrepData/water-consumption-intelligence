@@ -4,7 +4,7 @@
 #
 # Author: Javier Mondragón
 # Date: November 2025
-# Purpose: Process IoT water meter data and predict consumption patterns
+# Purpose: Process IoT water meter data
 #
 # Data Sources:
 # - Landing: /Volumes/labs_56754_cs713b/parcial2/acueducto/landing_lecturas/
